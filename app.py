@@ -27,6 +27,8 @@ df = pd.read_csv(filename_text_df)
 if len(df) >= 10_000:
     df = df.sample(n=10_000).reset_index(drop=True)
 
+df.to_csv(filename_text_df)
+
 
 
 topic_df = pd.read_csv(filename_topic_df)
