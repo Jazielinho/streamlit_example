@@ -18,18 +18,7 @@ dirname = os.path.dirname(__file__)
 
 min_topic_size = st.radio('Mínimo tamaño del topic (para la sección de tópicos y personas)', ('500', '100'))
 
-if min_topic_size == '100':
-    # dirname = 'C:/Users/User/Downloads/streamlit_example/'
-    filename_best_tweets_df = os.path.join(dirname, 'best_tweets_df_100.csv')
-    filename_ner_df = os.path.join(dirname, 'ner_df_100.csv')
-    filename_text_df = os.path.join(dirname, 'sample_text_info_df_100.csv')
-    filename_sentiment_df = os.path.join(dirname, 'sentiment_df_100.csv')
-    filename_timestamp_word_count_df = os.path.join(dirname, 'timestamp_word_count_df_100.csv')
-    filename_topics_info_df = os.path.join(dirname, 'topics_info_df_100.csv')
-    filename_topics_over_time_df = os.path.join(dirname, 'topics_over_time_df_100.csv')
-    filename_topics_words_df = os.path.join(dirname, 'topics_words_100.csv')
-    filename_word_count_df = os.path.join(dirname, 'word_count_df_100.csv')
-else:
+if min_topic_size == '500':
     filename_best_tweets_df = os.path.join(dirname, 'best_tweets_df_500.csv')
     filename_ner_df = os.path.join(dirname, 'ner_df_500.csv')
     filename_text_df = os.path.join(dirname, 'sample_text_info_df_500.csv')
@@ -39,6 +28,17 @@ else:
     filename_topics_over_time_df = os.path.join(dirname, 'topics_over_time_df_500.csv')
     filename_topics_words_df = os.path.join(dirname, 'topics_words_500.csv')
     filename_word_count_df = os.path.join(dirname, 'word_count_df_500.csv')
+    # dirname = 'C:/Users/User/Downloads/streamlit_example/'
+else:
+    filename_best_tweets_df = os.path.join(dirname, 'best_tweets_df_100.csv')
+    filename_ner_df = os.path.join(dirname, 'ner_df_100.csv')
+    filename_text_df = os.path.join(dirname, 'sample_text_info_df_100.csv')
+    filename_sentiment_df = os.path.join(dirname, 'sentiment_df_100.csv')
+    filename_timestamp_word_count_df = os.path.join(dirname, 'timestamp_word_count_df_100.csv')
+    filename_topics_info_df = os.path.join(dirname, 'topics_info_df_100.csv')
+    filename_topics_over_time_df = os.path.join(dirname, 'topics_over_time_df_100.csv')
+    filename_topics_words_df = os.path.join(dirname, 'topics_words_100.csv')
+    filename_word_count_df = os.path.join(dirname, 'word_count_df_100.csv')
 
 
 best_tweets_df = pd.read_csv(filename_best_tweets_df)
