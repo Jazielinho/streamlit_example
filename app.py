@@ -16,7 +16,7 @@ st.title('''TWEETS SHAKIRA - PIQUE''')
 
 dirname = os.path.dirname(__file__)
 
-min_topic_size = st.radio('Mínimo tamaño del topic (para la sección de tópicos y personas)', ('100', '500'))
+min_topic_size = st.radio('Mínimo tamaño del topic (para la sección de tópicos y personas)', ('500', '100'))
 
 if min_topic_size == '100':
     # dirname = 'C:/Users/User/Downloads/streamlit_example/'
