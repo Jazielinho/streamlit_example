@@ -12,14 +12,16 @@ import plotly.express as px
 
 
 #==========================================================================================================================================
-st.title('''TWEETS SHAKIRA - PIQUE''')
+st.title('''TWEETS NEGREIRA - BARCA''')
 
 dirname = os.path.dirname(__file__)
 
-min_topic_size = st.radio('Mínimo tamaño del topic (para la sección de tópicos y personas)', ('500', '250', '750', '1000'))
+min_topic_size = st.radio('Mínimo tamaño del topic (para la sección de tópicos y personas)', ('5', '10', '20', '30', '50', '100'))
 
 filename_best_tweets_df = os.path.join(dirname, 'best_tweets_df_{}.csv'.format(min_topic_size))
-filename_ner_df = os.path.join(dirname, 'ner_df_{}.csv'.format(min_topic_size))
+filename_ner_df = os.path.join(dirname, 'ner_df.csv'.format(min_topic_size))
+filename_person_persons_df = os.path.join(dirname, 'person_persons_df.csv'.format(min_topic_size))
+filename_person_words_df = os.path.join(dirname, 'person_words_df.csv'.format(min_topic_size))
 filename_text_df = os.path.join(dirname, 'sample_text_info_df_{}.csv'.format(min_topic_size))
 filename_sentiment_df = os.path.join(dirname, 'sentiment_df_{}.csv'.format(min_topic_size))
 filename_timestamp_word_count_df = os.path.join(dirname, 'timestamp_word_count_df_{}.csv'.format(min_topic_size))
@@ -28,31 +30,12 @@ filename_topics_over_time_df = os.path.join(dirname, 'topics_over_time_df_{}.csv
 filename_topics_words_df = os.path.join(dirname, 'topics_words_{}.csv'.format(min_topic_size))
 filename_word_count_df = os.path.join(dirname, 'word_count_df_{}.csv'.format(min_topic_size))
 
-# if min_topic_size == '500':
-#     filename_best_tweets_df = os.path.join(dirname, 'best_tweets_df_500.csv')
-#     filename_ner_df = os.path.join(dirname, 'ner_df_500.csv')
-#     filename_text_df = os.path.join(dirname, 'sample_text_info_df_500.csv')
-#     filename_sentiment_df = os.path.join(dirname, 'sentiment_df_500.csv')
-#     filename_timestamp_word_count_df = os.path.join(dirname, 'timestamp_word_count_df_500.csv')
-#     filename_topics_info_df = os.path.join(dirname, 'topics_info_df_500.csv')
-#     filename_topics_over_time_df = os.path.join(dirname, 'topics_over_time_df_500.csv')
-#     filename_topics_words_df = os.path.join(dirname, 'topics_words_500.csv')
-#     filename_word_count_df = os.path.join(dirname, 'word_count_df_500.csv')
-#     # dirname = 'C:/Users/User/Downloads/streamlit_example/'
-# else:
-#     filename_best_tweets_df = os.path.join(dirname, 'best_tweets_df_100.csv')
-#     filename_ner_df = os.path.join(dirname, 'ner_df_100.csv')
-#     filename_text_df = os.path.join(dirname, 'sample_text_info_df_100.csv')
-#     filename_sentiment_df = os.path.join(dirname, 'sentiment_df_100.csv')
-#     filename_timestamp_word_count_df = os.path.join(dirname, 'timestamp_word_count_df_100.csv')
-#     filename_topics_info_df = os.path.join(dirname, 'topics_info_df_100.csv')
-#     filename_topics_over_time_df = os.path.join(dirname, 'topics_over_time_df_100.csv')
-#     filename_topics_words_df = os.path.join(dirname, 'topics_words_100.csv')
-#     filename_word_count_df = os.path.join(dirname, 'word_count_df_100.csv')
 
 
 best_tweets_df = pd.read_csv(filename_best_tweets_df)
 ner_df = pd.read_csv(filename_ner_df)
+person_persons_df = pd.read_csv(filename_person_persons_df)
+person_words_df = pd.read_csv(filename_person_words_df)
 text_df = pd.read_csv(filename_text_df)
 sentiment_df = pd.read_csv(filename_sentiment_df)
 timestamp_word_count_df = pd.read_csv(filename_timestamp_word_count_df)
@@ -174,9 +157,6 @@ with tab2:
         if int(topic) != -1:
             selection = text_df.loc[text_df.topic == topic, :]
             selection["text"] = ""
-
-            # if df['topic'].value_counts().to_dict().get(topic) >= 100:
-            #     selection.loc[len(selection), :] = [None, None, None, selection.x.mean(), selection.y.mean(), name]
 
             fig.add_trace(
                 go.Scattergl(
@@ -416,7 +396,7 @@ with tab2:
 with tab3:
     st.markdown('# Principales Personas')
 
-    persons_textids_df = pd.DataFrame(ner_df[ner_df['type'] == 'PERSON'].groupby('text')['text_id'].agg(lambda x: list(set(x))))
+    persons_textids_df = pd.DataFrame(ner_df[ner_df['type'].isin(['PERSON', 'ORGANIZATION'])].groupby('text')['text_id'].agg(lambda x: list(set(x))))
     persons_textids_df.columns = ['text_id']
     persons_textids_df['count'] = persons_textids_df['text_id'].apply(lambda x: len(x))
     persons_textids_df = persons_textids_df.sort_values('count', ascending=False).head(30)
@@ -495,8 +475,32 @@ with tab3:
             fig.update_layout(width=WIDTH, height=HEIGHT)
             st.plotly_chart(fig)
 
+            _person_persons_df = person_persons_df[person_persons_df['person'] == persona_elegida]
+            if len(_person_persons_df) > 0:
+                st.markdown(f'''#### Personas que también aparecen en los textos con: {persona_elegida}''')
+                data = [go.Bar(
+                    x=_person_persons_df['lower'].to_list(),
+                    y=_person_persons_df['count'].to_list(),
+                )]
 
-            st.markdown(f'''#### Cantidad de tweets y sentimiento por tópicos para: {persona_elegida}''')
+                fig = go.Figure(data=data)
+                fig.update_layout(width=WIDTH, height=HEIGHT)
+                st.plotly_chart(fig)
+
+            _person_words_df = person_words_df[person_words_df['person'] == persona_elegida]
+            if len(_person_words_df) > 0:
+                st.markdown(f'''#### Palabras que también aparecen en los textos con: {persona_elegida}''')
+                data = [go.Bar(
+                    x=_person_words_df['word'].to_list(),
+                    y=_person_words_df['count'].to_list(),
+                )]
+
+                fig = go.Figure(data=data)
+                fig.update_layout(width=WIDTH, height=HEIGHT)
+                st.plotly_chart(fig)
+
+
+            st.markdown(f'''#### Tópicos y documentos: {persona_elegida}''')
 
             new_df = text_df[text_df['text_id'].isin(persona_textids)]
             _df = new_df[new_df['topic'] == -1]
