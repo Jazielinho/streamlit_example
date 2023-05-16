@@ -24,7 +24,7 @@ min_topic_sizes = [str(x) for x in min_topic_sizes]
 
 st.set_page_config(page_title='Chess Champions', page_icon=':chess_pawn:', layout='wide')
 
-st.title(f'''CHESS CHAMPIONS''')
+st.title(f'''World chess championship''')
 
 min_topic_size = st.radio('Mínimo tamaño de Topic', tuple(min_topic_sizes))
 
