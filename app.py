@@ -45,6 +45,9 @@ text_info_df = pd.read_csv(f'''{directory}/text_info_{min_topic_size}.csv''', li
 text_info_df['date'] = pd.to_datetime(text_info_df['date']).dt.date
 topics_over_time_df['Timestamp'] = pd.to_datetime(topics_over_time_df['Timestamp']).dt.date
 
+text_info_df = text_info_df[text_info_df['date'] >= datetime.date(2023, 4, 1)]
+topics_over_time_df = topics_over_time_df[topics_over_time_df['Timestamp'] >= datetime.date(2023, 4, 1)]
+
 for var in ['retweet_count', 'reply_count', 'like_count', 'quote_count', 'impression_count']:
     text_info_df[var] = text_info_df[var].fillna(0).astype(int)
 
